@@ -1,6 +1,10 @@
-package org.example;
+package org;
 
 
+import PageObjects.CheckoutPage;
+import PageObjects.FormPage;
+import example.Utilities;
+import example.base;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
@@ -10,7 +14,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.concurrent.TimeUnit;
 
 import static io.appium.java_client.touch.LongPressOptions.longPressOptions;
@@ -30,11 +33,17 @@ public class ecommerce_tc_1_2 extends base {
 
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
+        FormPage formPage = new FormPage(driver);
+        Utilities utilities = new Utilities(driver);
+        CheckoutPage checkoutPage = new CheckoutPage(driver);
+
         //FIRST SCREEN
-        driver.findElementById("nameField").sendKeys("Josu");
-        driver.findElementById("radioFemale").click();
-        driver.findElementById("spinnerCountry").click();
-        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\"Argentina\"))");
+        formPage.getNameField().sendKeys("Josu");
+        formPage.radioFemale.click();
+        formPage.getCountry().click();
+
+        utilities.scrollToText("Argentina");
+//        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\"Argentina\"))");
         driver.findElementByXPath("//*[@text='Argentina']").click();
         driver.findElementById("btnLetsShop").click();
 
@@ -44,15 +53,15 @@ public class ecommerce_tc_1_2 extends base {
 
         driver.findElementById("appbar_btn_cart").click();
 
-        count = driver.findElements(By.id("productPrice")).size();
+        count = checkoutPage.getProductList().size();
         float sum = 0;
         for (int i = 0; i < count; i++) {
-            float price = Float.parseFloat(driver.findElements(By.id("productPrice")).get(i).getText().substring(1));
+            float price = Float.parseFloat(checkoutPage.getProductList().get(i).getText().substring(1));
             sum = price + sum;
         }
 
         System.out.println(sum);
-        float totalPurchase = Float.parseFloat(driver.findElement(By.id("totalAmountLbl")).getText().substring(2));
+        float totalPurchase = Float.parseFloat(checkoutPage.totalAmount.getText().substring(2));
         System.out.println(totalPurchase);
         Assert.assertEquals(totalPurchase, sum);
 
