@@ -11,6 +11,7 @@ import io.appium.java_client.android.AndroidElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -27,12 +28,16 @@ import static io.appium.java_client.touch.offset.ElementOption.element;
 
 public class ecommerce_tc_1_2 extends base {
     //    public static void main(String[] args) throws IOException, InterruptedException {
+    @BeforeTest
+    public void server() {
+    service=startServer();
+    }
     @Test
     public void totalValidation() throws IOException, InterruptedException {
         AndroidDriver<AndroidElement> driver = capabilities("GeneralStoreApp");//General-Store.apk
 
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
+//        service=startServer();
         FormPage formPage = new FormPage(driver);
         Utilities utilities = new Utilities(driver);
         CheckoutPage checkoutPage = new CheckoutPage(driver);
@@ -77,6 +82,7 @@ public class ecommerce_tc_1_2 extends base {
         driver.findElementById("android:id/button1").click();
         driver.findElementById("btnProceed").click();
 
+        service.stop();
     }
 
 
